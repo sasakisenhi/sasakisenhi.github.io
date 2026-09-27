@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="佐々木 心のPlatform Engineering / Developer Experienceポートフォリオ">
+  <title>佐々木 心 | Engineering Portfolio</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">Kokoro Sasaki</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#projects">Projects</a>
+      <a href="rdp.html">RDP</a>
+      <a href="bevy.html">Bevy</a>
+      <a href="https://github.com/sasakisenhi">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Software Engineer / Platform Engineering</p>
+      <h1>開発者が本来の創造に集中できる環境を、仕組みとして設計する。</h1>
+      <p class="lead">
+        業務でのソフトウェア開発に加え、Developer Experience、CI/CD、
+        Platform Engineering、Platform Qualityを個人開発で検証しています。
+        技術を使うこと自体ではなく、課題から要求と品質条件を定義し、
+        再現可能な形で検証することを重視しています。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#projects">Projectsを見る</a>
+        <a class="button" href="https://github.com/sasakisenhi">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="container">
+      <p class="eyebrow">Selected Projects</p>
+      <h2>2つの方向から、開発環境を考える。</h2>
+      <p class="section-intro">
+        Bevyではゲーム開発のCI/CDと成果物管理を、RDPではPlatformの責務と品質検証を扱っています。
+        両方に共通するテーマは、開発者が環境維持ではなく本来の開発へ集中できる状態をつくることです。
+      </p>
+
+      <div class="grid-2">
+        <article class="card project-card">
+          <div>
+            <div class="meta">Platform Engineering / Platform QA</div>
+            <h3>Reliable Development Platform</h3>
+            <p>
+              Developerが担う環境維持・復旧判断の一部をPlatformへ移し、
+              その能力を観測可能・再現可能な条件で検証するプロジェクト。
+              R1ではKubernetes上のSelf-Healing Runtimeを完成させました。
+            </p>
+            <div class="tags">
+              <span class="tag">Kubernetes</span><span class="tag">kind</span>
+              <span class="tag">GitHub Actions</span><span class="tag">Bash</span>
+              <span class="tag">E2E</span>
+            </div>
+          </div>
+          <a class="card-link" href="rdp.html">Project Overview →</a>
+        </article>
+
+        <article class="card project-card">
+          <div>
+            <div class="meta">Game Development / CI/CD / AWS</div>
+            <h3>Bevy開発を支えるCI/CD・AWS基盤</h3>
+            <p>
+              Rust + Bevyによるゲーム開発を題材に、変更検証、Windows向けビルド、
+              AWS上の成果物管理までの開発フローを設計・実装したプロジェクト。
+            </p>
+            <div class="tags">
+              <span class="tag">Rust</span><span class="tag">Bevy</span>
+              <span class="tag">AWS CDK</span><span class="tag">GitHub Actions</span>
+              <span class="tag">S3</span>
+            </div>
+          </div>
+          <a class="card-link" href="bevy.html">Project Overview →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">How I Think</p>
+      <h2>Technology follows the problem.</h2>
+      <div class="flow">
+        <div class="flow-step"><strong>Problem</strong><span>何がDeveloperの負荷になっているか</span></div>
+        <div class="flow-step"><strong>Hypothesis</strong><span>どの責務を仕組みに移すか</span></div>
+        <div class="flow-step"><strong>Requirement</strong><span>何を満たせば価値が成立するか</span></div>
+        <div class="flow-step"><strong>Quality</strong><span>観測可能な条件へ変換する</span></div>
+        <div class="flow-step"><strong>Mechanism</strong><span>必要な技術を選択する</span></div>
+        <div class="flow-step"><strong>Verification</strong><span>再現可能にPASS / FAILを判定する</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div>© 2026 Kokoro Sasaki</div>
+    <div><a href="https://github.com/sasakisenhi">github.com/sasakisenhi</a></div>
+  </div>
+</footer>
+</body>
+</html>
