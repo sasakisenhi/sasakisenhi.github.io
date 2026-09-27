@@ -101,6 +101,28 @@
           </g>
         </svg>
       </div>
+
+      <div class="evidence-block">
+        <div class="evidence-copy">
+          <p class="eyebrow">Reproducible Verification</p>
+          <h3>検証環境の構築からE2Eを開始する。</h3>
+          <p class="muted">
+            <code>make test-self-healing</code> を入口として、kindクラスタの作成、
+            Kubernetes設定、Namespace / Deployment / Serviceの配置までを自動化しています。
+            この画面は、障害注入へ進む前の検証環境が再現されていく実行ログです。
+          </p>
+        </div>
+        <figure class="terminal-shot">
+          <img
+            src="assets/rdp-self-healing-start.webp"
+            alt="make test-self-healing を実行し、kindクラスタとSelf-Healing用Workloadを作成しているターミナル画面"
+            loading="lazy"
+          >
+          <figcaption>
+            <code>make test-self-healing</code> 実行時の環境構築ログ。クラスタを手作業で準備することを前提にしない。
+          </figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
