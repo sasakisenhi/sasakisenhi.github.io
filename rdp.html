@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reliable Development Platform - Platform Engineering / Platform QA project overview">
+  <title>Reliable Development Platform | Kokoro Sasaki</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">Kokoro Sasaki</a>
+    <nav class="nav-links">
+      <a href="index.html#projects">Projects</a>
+      <a href="bevy.html">Bevy</a>
+      <a href="https://github.com/sasakisenhi/reliable-dev-platform">GitHub Repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Platform Engineering / Platform QA</p>
+      <h1>Reliable Development Platform</h1>
+      <p class="lead">
+        Developerが環境の復旧や正常性確認に過度な注意を払わず、
+        アプリケーション開発へ集中できる状態を目指す実験的プロジェクトです。
+        Platformが担う責務を定義し、その能力を再現可能な条件で検証します。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="https://github.com/sasakisenhi/reliable-dev-platform">GitHub Repository</a>
+        <a class="button" href="#r1">R1を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Core idea</span>
+      <h2 style="margin-top:16px;">環境維持の責務を、Developerの判断からPlatformへ。</h2>
+      <div class="callout">
+        「安定している」「自動復旧する」といった曖昧な表現ではなく、
+        Platform capabilityを観測可能なQuality Conditionへ変換し、
+        障害を含むシナリオで検証します。
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="r1">
+    <div class="container">
+      <p class="eyebrow">R1 — Complete</p>
+      <h2>Self-Healing Runtime</h2>
+      <p class="section-intro">
+        正常状態から単一実行インスタンスを失わせ、Developerによる復旧目的の操作なしで、
+        期待実行数と代表的な利用操作が回復することをE2Eで検証します。
+      </p>
+
+      <div class="grid-3">
+        <div class="card"><div class="metric">3</div><div class="muted">MVPでの期待実行インスタンス数</div></div>
+        <div class="card"><div class="metric">120s</div><div class="muted">喪失観測からのAcceptance Threshold</div></div>
+        <div class="card"><div class="metric">0</div><div class="muted">障害注入後の復旧目的のDeveloper操作</div></div>
+      </div>
+
+      <div class="diagram" style="margin-top:22px;">
+        <svg viewBox="0 0 1000 260" role="img" aria-label="Self-healing verification flow">
+          <defs>
+            <marker id="arrow-rdp" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#295f4e"/></marker>
+          </defs>
+          <g font-family="sans-serif">
+            <rect x="28" y="75" width="150" height="88" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="103" y="105" text-anchor="middle" font-weight="700">Baseline</text>
+            <text x="103" y="130" text-anchor="middle" font-size="13" fill="#666b70">replicas = 3</text>
+            <text x="103" y="150" text-anchor="middle" font-size="13" fill="#666b70">operation succeeds</text>
+
+            <rect x="220" y="75" width="150" height="88" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="295" y="105" text-anchor="middle" font-weight="700">Inject loss</text>
+            <text x="295" y="132" text-anchor="middle" font-size="13" fill="#666b70">delete one Pod</text>
+
+            <rect x="412" y="75" width="150" height="88" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="487" y="105" text-anchor="middle" font-weight="700">Observe loss</text>
+            <text x="487" y="132" text-anchor="middle" font-size="13" fill="#666b70">target UID absent</text>
+
+            <rect x="604" y="75" width="150" height="88" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="679" y="105" text-anchor="middle" font-weight="700">Reconcile</text>
+            <text x="679" y="132" text-anchor="middle" font-size="13" fill="#666b70">Deployment / ReplicaSet</text>
+
+            <rect x="796" y="75" width="175" height="88" rx="16" fill="#e9f1ed" stroke="#295f4e"/>
+            <text x="883" y="105" text-anchor="middle" font-weight="700">PASS</text>
+            <text x="883" y="130" text-anchor="middle" font-size="13" fill="#295f4e">replicas restored</text>
+            <text x="883" y="150" text-anchor="middle" font-size="13" fill="#295f4e">operation succeeds</text>
+
+            <g stroke="#295f4e" stroke-width="2" marker-end="url(#arrow-rdp)">
+              <line x1="178" y1="119" x2="214" y2="119"/>
+              <line x1="370" y1="119" x2="406" y2="119"/>
+              <line x1="562" y1="119" x2="598" y2="119"/>
+              <line x1="754" y1="119" x2="790" y2="119"/>
+            </g>
+            <text x="487" y="205" text-anchor="middle" font-size="13" fill="#666b70">Timer starts from observed loss, not from delete request acceptance.</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Design Decisions</p>
+      <h2>技術選択より先に、検証したい能力を決める。</h2>
+      <div class="grid-2">
+        <div class="card"><h3>Kubernetes標準reconciliationを使う</h3><p class="muted">Pod喪失からのreplacementはDeployment / ReplicaSetが既に提供するため、R1ではcustom controllerを作らず既存機構をPlatform capabilityとして利用しました。</p></div>
+        <div class="card"><h3>Pod nameではなくUIDで個体を識別</h3><p class="muted">元の個体が本当に失われ、新しい個体へ置換されたことを明確に区別するためです。</p></div>
+        <div class="card"><h3>RunningとAvailabilityを分離</h3><p class="muted">実行個体数だけではなく、Service経由の代表操作成功も同一観測cycleで確認します。</p></div>
+        <div class="card"><h3>Observed lossを計測起点にする</h3><p class="muted">delete request受付時刻ではなく、対象UIDがRunningInstanceSetから外れた観測をAcceptance Thresholdの起点にします。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Development Approach</p>
+      <h2>ProblemからVerificationまでを一つのIncrementで閉じる。</h2>
+      <div class="flow">
+        <div class="flow-step"><strong>Problem</strong><span>復旧判断がDeveloperに残る</span></div>
+        <div class="flow-step"><strong>Hypothesis</strong><span>期待状態維持をPlatformへ</span></div>
+        <div class="flow-step"><strong>Requirement</strong><span>単一instance loss</span></div>
+        <div class="flow-step"><strong>Quality</strong><span>120秒・操作0件</span></div>
+        <div class="flow-step"><strong>Mechanism</strong><span>Kubernetes reconciliation</span></div>
+        <div class="flow-step"><strong>Verification</strong><span>障害注入E2E</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Roadmap</p>
+      <h2>Capabilityを小さく積み上げる。</h2>
+      <ul class="list-clean">
+        <li><strong>R1 — Self-Healing Runtime</strong> <span class="kicker">Complete</span></li>
+        <li><strong>R2 — Healthy Routing</strong> <span class="muted">Planned</span></li>
+        <li><strong>R3 — Safe Rolling Update</strong> <span class="muted">Planned</span></li>
+        <li><strong>R4 — Platform E2E</strong> <span class="muted">Planned</span></li>
+        <li><strong>R5 — CI Quality Gate</strong> <span class="muted">Planned</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer><div class="container"><a href="index.html">← Portfolio Top</a> · <a href="https://github.com/sasakisenhi/reliable-dev-platform">GitHub Repository</a></div></footer>
+</body>
+</html>
