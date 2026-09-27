@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bevy開発を支えるCI/CD・AWS基盤 - project overview">
+  <title>Bevy CI/CD & AWS Platform | Kokoro Sasaki</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">Kokoro Sasaki</a>
+    <nav class="nav-links">
+      <a href="index.html#projects">Projects</a>
+      <a href="rdp.html">RDP</a>
+      <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson">GitHub Repo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Game Development / CI/CD / AWS</p>
+      <h1>Bevy開発を支えるCI/CD・AWS基盤</h1>
+      <p class="lead">
+        Rust + Bevyのゲーム開発を題材に、変更を自動検証し、
+        Windows向けビルド成果物を再現可能な形で管理するための開発基盤を設計・実装しています。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="https://github.com/sasakisenhi/Bevy_AWS_lesson">GitHub Repository</a>
+        <a class="button" href="#pipeline">Pipelineを見る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="kicker">Why</span>
+      <h2 style="margin-top:16px;">ゲームそのものだけでなく、ゲームを作る環境を改善する。</h2>
+      <div class="callout">
+        開発フロー、テスト、ビルド、成果物管理を整え、
+        開発者が変更を安全に試しやすい状態をつくることをテーマにしています。
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pipeline">
+    <div class="container">
+      <p class="eyebrow">CI/CD Flow</p>
+      <h2>変更から成果物までを一つの流れとして設計する。</h2>
+      <div class="diagram">
+        <svg viewBox="0 0 1100 360" role="img" aria-label="Bevy CI/CD flow">
+          <defs>
+            <marker id="arrow-bevy" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#295f4e"/></marker>
+          </defs>
+          <g font-family="sans-serif">
+            <rect x="25" y="120" width="150" height="90" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="100" y="153" text-anchor="middle" font-weight="700">PR / main push</text>
+            <text x="100" y="179" text-anchor="middle" font-size="13" fill="#666b70">path filtering</text>
+
+            <rect x="220" y="40" width="175" height="90" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="307" y="72" text-anchor="middle" font-weight="700">App CI</text>
+            <text x="307" y="96" text-anchor="middle" font-size="13" fill="#666b70">fmt / test / Clippy / build</text>
+
+            <rect x="220" y="205" width="175" height="90" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="307" y="237" text-anchor="middle" font-weight="700">Infra CI</text>
+            <text x="307" y="261" text-anchor="middle" font-size="13" fill="#666b70">CDK strict synth / test</text>
+
+            <rect x="455" y="205" width="175" height="90" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="542" y="237" text-anchor="middle" font-weight="700">AWS OIDC</text>
+            <text x="542" y="261" text-anchor="middle" font-size="13" fill="#666b70">main push deploy route</text>
+
+            <rect x="690" y="205" width="175" height="90" rx="16" fill="#fff" stroke="#dedfdc"/>
+            <text x="777" y="237" text-anchor="middle" font-weight="700">Windows Build</text>
+            <text x="777" y="261" text-anchor="middle" font-size="13" fill="#666b70">cargo-xwin / release</text>
+
+            <rect x="925" y="205" width="150" height="90" rx="16" fill="#e9f1ed" stroke="#295f4e"/>
+            <text x="1000" y="237" text-anchor="middle" font-weight="700">S3 Artifact</text>
+            <text x="1000" y="261" text-anchor="middle" font-size="13" fill="#295f4e">metadata + replication</text>
+
+            <g stroke="#295f4e" stroke-width="2" marker-end="url(#arrow-bevy)">
+              <line x1="175" y1="145" x2="214" y2="94"/>
+              <line x1="175" y1="185" x2="214" y2="240"/>
+              <line x1="395" y1="250" x2="449" y2="250"/>
+              <line x1="630" y1="250" x2="684" y2="250"/>
+              <line x1="865" y1="250" x2="919" y2="250"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Quality & Reproducibility</p>
+      <h2>「動く」だけでなく、変更を安全に検証できる状態をつくる。</h2>
+      <div class="grid-2">
+        <div class="card"><h3>Application CI</h3><p class="muted"><code>cargo fmt -- --check</code>、Rust tests、Clippy、<code>--locked</code>付きbuildを変更時に実行します。</p></div>
+        <div class="card"><h3>Infrastructure test</h3><p class="muted">AWS CDK assertionsとcdk-nagを使い、構成とセキュリティ要件をデプロイ前に検証します。</p></div>
+        <div class="card"><h3>Artifact metadata</h3><p class="muted">Git SHA、UTC時刻、Rust compiler、Cargo.lock SHA-256、crate名を成果物とともに記録する設計です。</p></div>
+        <div class="card"><h3>Architecture boundaries</h3><p class="muted"><code>game_runtime → game_logic → game_core</code>の依存方向を定義し、テストしやすい境界を保ちます。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Verification Status</p>
+      <h2>検証済みと未検証を分けて記録する。</h2>
+      <p class="section-intro">
+        App CIとInfra Testは実行成功を確認しています。一方、現在の検証用AWSアカウント停止中に実行した
+        AWS deployはOIDCによるロール引き受け段階で失敗しており、実環境での正常デプロイ完了は主張していません。
+      </p>
+      <div class="grid-3">
+        <div class="card"><div class="metric">✓</div><div class="muted">App CI</div></div>
+        <div class="card"><div class="metric">✓</div><div class="muted">Infra Test</div></div>
+        <div class="card"><div class="metric">—</div><div class="muted">AWS deploy / Artifact Freeze: 未検証</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Technology</p>
+      <h2>Stack</h2>
+      <div class="tags">
+        <span class="tag">Rust</span><span class="tag">Bevy</span><span class="tag">Cargo workspace</span>
+        <span class="tag">TypeScript</span><span class="tag">AWS CDK</span><span class="tag">CloudFormation</span>
+        <span class="tag">GitHub Actions</span><span class="tag">AWS S3</span><span class="tag">IAM / OIDC</span>
+        <span class="tag">CDK assertions</span><span class="tag">cdk-nag</span><span class="tag">Docker / act</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="container"><a href="index.html">← Portfolio Top</a> · <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson">GitHub Repository</a></div></footer>
+</body>
+</html>
