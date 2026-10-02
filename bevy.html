@@ -25,11 +25,12 @@
       <p class="eyebrow">Game Development / CI/CD / AWS</p>
       <h1>Bevy開発を支えるCI/CD・AWS基盤</h1>
       <p class="lead">
-        Rust + Bevyのゲーム開発を題材に、変更を自動検証し、
-        Windows向けビルド成果物を再現可能な形で管理するための開発基盤を設計・実装しています。
+        Rust + Bevyのゲーム開発を題材に、変更の自動検証からAWSへのデプロイ、
+        Windows向けビルド成果物の保管までを一つのCI/CD経路として設計・実装し、実AWS環境でE2E検証しました。
       </p>
       <div class="hero-actions">
         <a class="button primary" href="https://github.com/sasakisenhi/Bevy_AWS_lesson">GitHub Repository</a>
+        <a class="button" href="https://github.com/sasakisenhi/Bevy_AWS_lesson/releases/tag/v1.0.0">v1.0.0 Release</a>
         <a class="button" href="#pipeline">Pipelineを見る</a>
       </div>
     </div>
@@ -41,7 +42,8 @@
       <h2 style="margin-top:16px;">ゲームそのものだけでなく、ゲームを作る環境を改善する。</h2>
       <div class="callout">
         開発フロー、テスト、ビルド、成果物管理を整え、
-        開発者が変更を安全に試しやすい状態をつくることをテーマにしています。
+        開発者が変更を安全に試し、再現可能な成果物へつなげられる状態をつくることをテーマにしています。
+        Phase 1では、GitHub ActionsからAWSへのOIDC認証、CDKデプロイ、Windows Release build、S3 Artifact Freezeまでを実環境で確認しました。
       </div>
     </div>
   </section>
@@ -57,7 +59,7 @@
           </defs>
           <g font-family="sans-serif">
             <rect x="25" y="120" width="150" height="90" rx="16" fill="#fff" stroke="#dedfdc"/>
-            <text x="100" y="153" text-anchor="middle" font-weight="700">PR / main push</text>
+            <text x="100" y="153" text-anchor="middle" font-weight="700">PR / main・master push</text>
             <text x="100" y="179" text-anchor="middle" font-size="13" fill="#666b70">path filtering</text>
 
             <rect x="220" y="40" width="175" height="90" rx="16" fill="#fff" stroke="#dedfdc"/>
@@ -95,6 +97,35 @@
 
   <section class="section">
     <div class="container">
+      <p class="eyebrow">Phase 1 — Complete / v1.0.0</p>
+      <h2>CIからAWS、Windows build、Artifact Freezeまでを実環境でつなぐ。</h2>
+      <p class="section-intro">
+        2026-10-02のE2E runで、GitHub ActionsからGitHub OIDCを介してAWS IAM Roleを引き受け、
+        CDK diff / deploy、Windows向けRelease build、S3への成果物保存までの経路が成功しました。
+        Phase 1の完成点を <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson/releases/tag/v1.0.0">v1.0.0</a> として固定しています。
+      </p>
+      <div class="grid-3">
+        <div class="card"><div class="metric">✓</div><div class="muted">GitHub OIDC → AWS</div></div>
+        <div class="card"><div class="metric">✓</div><div class="muted">CDK deploy / Windows Release build</div></div>
+        <div class="card"><div class="metric">✓</div><div class="muted">S3 Artifact Freeze / metrics upload</div></div>
+      </div>
+      <figure class="wide-shot">
+        <img
+          src="assets/bevy-ci-build-metrics.webp"
+          alt="GitHub ActionsでインフラデプロイとS3 Artifact Freezeが成功し、Build Metricsが出力された画面"
+          loading="lazy"
+        >
+        <figcaption>
+          GitHub ActionsのJob Summary。Infra deployとArtifact Freezeが成功し、toolchain準備、cache restore、
+          build、AWS認証、CloudFormation参照、uploadの各所要時間とcache hitを実行時に記録しています。
+          表示値は単一runの観測値であり、性能保証値ではありません。
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
       <p class="eyebrow">Quality & Reproducibility</p>
       <h2>「動く」だけでなく、変更を安全に検証できる状態をつくる。</h2>
       <div class="grid-2">
@@ -109,16 +140,23 @@
   <section class="section">
     <div class="container">
       <p class="eyebrow">Verification Status</p>
-      <h2>検証済みと未検証を分けて記録する。</h2>
+      <h2>「設計した」だけでなく、実際のCI/CD経路を通して確認する。</h2>
       <p class="section-intro">
-        App CIとInfra Testは実行成功を確認しています。一方、現在の検証用AWSアカウント停止中に実行した
-        AWS deployはOIDCによるロール引き受け段階で失敗しており、実環境での正常デプロイ完了は主張していません。
+        App CIとInfra Testに加え、実AWS環境へのOIDC認証、CDK deployment、Windows Release build、
+        S3 Artifact FreezeまでをGitHub Actionsで確認しています。新しいAWSアカウントについても、
+        初回認証後のbootstrap / recoveryからGitHub設定検証までを実環境で確認しました。
       </p>
       <div class="grid-3">
-        <div class="card"><div class="metric">✓</div><div class="muted">App CI</div></div>
-        <div class="card"><div class="metric">✓</div><div class="muted">Infra Test</div></div>
-        <div class="card"><div class="metric">—</div><div class="muted">AWS deploy / Artifact Freeze: 未検証</div></div>
+        <div class="card"><div class="metric">✓</div><div class="muted">App / Infrastructure CI</div></div>
+        <div class="card"><div class="metric">✓</div><div class="muted">AWS OIDC / CDK Deploy</div></div>
+        <div class="card"><div class="metric">✓</div><div class="muted">Windows Build / S3 Artifact Freeze</div></div>
       </div>
+      <p class="muted" style="margin-top:18px;">
+        実AWS環境を含む経路は
+        <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson/actions/runs/37017781536">run #66</a> と
+        <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson/actions/runs/37061603566">run #67</a>
+        で成功しています。
+      </p>
     </div>
   </section>
 
@@ -136,6 +174,6 @@
   </section>
 </main>
 
-<footer><div class="container"><a href="index.html">← Portfolio Top</a> · <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson">GitHub Repository</a></div></footer>
+<footer><div class="container"><a href="index.html">← Portfolio Top</a> · <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson">GitHub Repository</a> · <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson/releases/tag/v1.0.0">v1.0.0 Release</a></div></footer>
 </body>
 </html>
