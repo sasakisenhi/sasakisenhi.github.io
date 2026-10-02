@@ -144,3 +144,22 @@ code { background: var(--code); border-radius: 6px; padding: .1em .35em; font-fa
   font-size: .82rem;
   line-height: 1.55;
 }
+
+
+.wide-shot {
+  margin: 32px 0 0;
+}
+.wide-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 14px 36px rgba(22, 22, 22, .12);
+}
+.wide-shot figcaption {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: .84rem;
+  line-height: 1.6;
+}
