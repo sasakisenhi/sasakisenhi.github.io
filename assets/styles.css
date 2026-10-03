@@ -394,3 +394,50 @@ p, li, figcaption, .callout, .muted {
     white-space: normal;
   }
 }
+
+
+/* Mobile typography polish */
+@media (max-width: 520px) {
+  .site-header .nav {
+    padding: 9px 0 8px;
+    gap: 4px;
+  }
+
+  .brand {
+    font-size: .98rem;
+  }
+
+  .nav-links {
+    gap: 13px;
+    font-size: .82rem;
+    line-height: 1.35;
+  }
+
+  .hero {
+    padding-top: 56px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.95rem, 9vw, 2.25rem);
+    line-height: 1.32;
+  }
+
+  .hero-title .headline-segment {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .hero-title .headline-segment .keep-together {
+    white-space: nowrap;
+  }
+
+  .hero-title .headline-segment .keep-together + .keep-together {
+    margin-left: .14em;
+  }
+
+  .lead {
+    margin-top: 24px;
+  }
+}
