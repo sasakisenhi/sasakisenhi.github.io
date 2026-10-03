@@ -307,3 +307,30 @@ code { background: var(--code); border-radius: 6px; padding: .1em .35em; font-fa
   .pyramid-layer { width: 100% !important; }
   .pipeline-arrow { padding: 0 2px; }
 }
+
+
+/* Semantic Japanese line wrapping */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+p, li, figcaption, .callout, .muted {
+  text-wrap: pretty;
+  line-break: strict;
+  word-break: normal;
+}
+.phrase {
+  display: inline-block;
+  max-width: 100%;
+}
+.phrase + .phrase {
+  margin-left: .18em;
+}
+
+@media (max-width: 600px) {
+  .phrase {
+    display: inline;
+  }
+  .phrase + .phrase {
+    margin-left: 0;
+  }
+}
