@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="実務で見つけた開発上の摩擦に対する改善提案 - Test Strategy / CI/CD / Platform Engineering">
+  <title>Improvement Proposals | Shin Sasaki</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="index.html">Shin Sasaki</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#projects">Projects</a>
+      <a href="improvements.html">Improvements</a>
+      <a href="rdp.html">RDP</a>
+      <a href="bevy.html">Bevy</a>
+      <a href="https://github.com/sasakisenhi">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">Workplace Observations / Improvement Proposals</p>
+      <h1>現場で見つけた摩擦を、改善可能な構造へ分解する。</h1>
+      <p class="lead">
+        日々の開発・保守業務で感じた課題を起点に、テスト戦略、CI/CD、
+        Platform Engineeringに関する改善施策を調査・整理し、社内へ共有しました。
+        以下はその中から、開発環境エンジニアリングとの関連が強い3件を、
+        社内固有情報を除いて一般化したものです。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#test-strategy">3 proposalsを見る</a>
+        <a class="button" href="bevy.html">Bevy CI/CD</a>
+        <a class="button" href="rdp.html">Reliable Development Platform</a>
+      </div>
+      <div class="status-strip" aria-label="Proposal status">
+        <span><strong>Status</strong> Proposal</span>
+        <span>Shared internally</span>
+        <span>Not implemented</span>
+        <span>Impact not verified</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="test-strategy">
+    <div class="container">
+      <p class="eyebrow">01 — Test Strategy</p>
+      <h2>E2E偏重から、多層のフィードバックループへ。</h2>
+      <div class="proposal-lead">
+        <div>
+          <span class="kicker">Observation</span>
+          <p>
+            担当した開発環境ではUnit Testが未整備で、品質確認がE2Eテストや後工程の確認に大きく依存していました。
+            比較的小さなロジックの不具合でも後工程まで進まないと検出しにくく、
+            フィードバックコストが高くなりやすい構造に問題意識を持ちました。
+          </p>
+        </div>
+        <div class="proposal-metric">
+          <div class="metric">0</div>
+          <div class="muted">Unit Testが未整備だった担当環境</div>
+        </div>
+      </div>
+
+      <div class="grid-2 proposal-grid">
+        <article class="card">
+          <div class="meta">Problem</div>
+          <h3>確認が後工程へ偏る</h3>
+          <ul class="list-clean compact-list">
+            <li>小さな不具合でも検出が後工程になりやすい</li>
+            <li>E2Eは実行・保守コストが高い</li>
+            <li>各テスト層が何を保証するかが曖昧</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="meta">Proposal</div>
+          <h3>テストの責務を層ごとに分離する</h3>
+          <p class="muted">
+            ロジックはUnit、API・DB・外部連携はIntegration、
+            主要業務フローはSystem / E2Eへ分ける。
+            E2Eをなくすのではなく、E2Eでしか確認できない重要フローへ集中させる。
+          </p>
+        </article>
+      </div>
+
+      <div class="test-pyramid" aria-label="Test pyramid concept">
+        <div class="pyramid-layer layer-e2e"><strong>E2E</strong><span>主要な利用者フロー</span></div>
+        <div class="pyramid-layer layer-system"><strong>System</strong><span>業務シナリオ・非機能</span></div>
+        <div class="pyramid-layer layer-integration"><strong>Integration</strong><span>API・DB・外部連携</span></div>
+        <div class="pyramid-layer layer-unit"><strong>Unit</strong><span>ロジックを高速に検証</span></div>
+      </div>
+
+      <div class="grid-2 proposal-grid">
+        <article class="card">
+          <div class="meta">Expected Impact</div>
+          <h3>早く、原因を局所化しやすいフィードバック</h3>
+          <p class="muted">
+            より早い不具合検知、失敗原因の局所化、E2Eの実行・保守負荷低減、
+            CIへの自動テスト統合を期待しました。
+          </p>
+        </article>
+        <article class="card">
+          <div class="meta">Trade-off</div>
+          <h3>ピラミッドの形自体を目的にしない</h3>
+          <p class="muted">
+            Unit Testを増やすだけでは業務フローや統合部分の保証にはならないため、
+            変更リスクと対象責務に応じてテスト層を選択する必要があります。
+          </p>
+        </article>
+      </div>
+      <p class="proposal-status">Status: <strong>Proposed / Shared internally / Not implemented</strong></p>
+    </div>
+  </section>
+
+  <section class="section" id="cicd">
+    <div class="container">
+      <p class="eyebrow">02 — CI/CD</p>
+      <h2>ローカル依存の品質確認を、共有CIのガードレールへ。</h2>
+      <div class="proposal-lead">
+        <div>
+          <span class="kicker">Observation</span>
+          <p>
+            Lint自体は導入されていましたが、各開発環境で安定して同じ条件で動く状態ではなく、
+            品質確認が個々のDeveloper環境に依存していました。
+            また、DDDを採用したアーキテクチャでも依存ルールから外れた実装が残ることがあり、
+            人のレビューだけで継続的に守ることには限界がありました。
+          </p>
+          <p>
+            デプロイ自体は自動化されている一方、本番まで複数の環境・段階を通す必要があり、
+            CIと自動テストが十分でないため、一つの修正でも同様の動作確認を複数回手作業で行う状態でした。
+          </p>
+        </div>
+        <div class="proposal-metric">
+          <div class="metric">4×</div>
+          <div class="muted">一つの修正で繰り返していた動作確認の最大回数</div>
+        </div>
+      </div>
+
+      <div class="grid-2 proposal-grid">
+        <article class="card">
+          <div class="meta">Problem</div>
+          <h3>CDがあっても、検証Toilが残る</h3>
+          <ul class="list-clean compact-list">
+            <li>Lint結果がDeveloper環境に依存</li>
+            <li>Architecture Ruleが継続検証されていない</li>
+            <li>複数環境への反映ごとに同じ確認を繰り返す</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="meta">Proposal</div>
+          <h3>品質ルールをExecutableにする</h3>
+          <p class="muted">
+            PR / pushを起点に、Lint・Format・Unit / Integration Testを共有CIで実行し、
+            DDDの依存方向などのArchitecture RuleもArchitecture Testとして機械的に検証する。
+          </p>
+        </article>
+      </div>
+
+      <div class="pipeline proposal-pipeline" aria-label="Proposed CI flow">
+        <div class="pipeline-node"><strong>Code Change</strong><span>PR / push</span></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-node"><strong>Lint / Format</strong><span>同一条件</span></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-node"><strong>Tests</strong><span>Unit / Integration</span></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-node"><strong>Architecture</strong><span>Dependency rules</span></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-node accent-node"><strong>Feedback</strong><span>merge前に検知</span></div>
+      </div>
+
+      <div class="grid-2 proposal-grid">
+        <article class="card">
+          <div class="meta">Expected Impact</div>
+          <h3>人が見るべきレビューへ集中する</h3>
+          <p class="muted">
+            DeveloperごとのLint差異、Architecture Rule逸脱、反復的な手動確認を減らし、
+            レビューを仕様・設計・影響範囲など人が判断すべき観点へ寄せることを期待しました。
+          </p>
+        </article>
+        <article class="card related-card">
+          <div class="meta">Related Implementation</div>
+          <h3>Bevy_AWS_lesson</h3>
+          <p class="muted">
+            この改善案で考えた「変更検証から成果物保存までの自動化」を、
+            個人開発ではRust + Bevyを題材に実装し、
+            GitHub Actions → AWS → Windows Release build → S3 Artifact Freezeまで検証しました。
+          </p>
+          <a class="card-link" href="bevy.html">Implemented projectを見る →</a>
+        </article>
+      </div>
+      <p class="proposal-status">Workplace status: <strong>Proposed / Shared internally / Not implemented</strong></p>
+    </div>
+  </section>
+
+  <section class="section" id="platform-engineering">
+    <div class="container">
+      <p class="eyebrow">03 — Platform Engineering</p>
+      <h2>改善を「空いた時間」から守る。</h2>
+      <div class="proposal-lead">
+        <div>
+          <span class="kicker">Observation</span>
+          <p>
+            開発基盤や開発プロセスを改善しようという動き自体は何度か生まれていました。
+            しかし改善活動は通常の機能開発との兼任で、開発案件が逼迫すると優先順位が下がり、
+            活動が止まることが繰り返されていました。
+          </p>
+          <p>
+            また、効率化で一時的に余力が生まれても、その時間は新規機能開発へ再配分されやすく、
+            技術負債の返済や開発環境の継続的改善に使うCapacityを確保しにくい構造がありました。
+          </p>
+        </div>
+        <div class="proposal-metric">
+          <div class="metric">∞</div>
+          <div class="muted">余り時間に依存すると、改善は継続しにくい</div>
+        </div>
+      </div>
+
+      <div class="callout proposal-quote">
+        改善で生まれた余力がすべて新規開発へ再投入されるなら、
+        改善活動自身を持続させる余白は生まれない。
+      </div>
+
+      <div class="grid-2 proposal-grid">
+        <article class="card">
+          <div class="meta">Problem</div>
+          <h3>Improvement work has no protected capacity.</h3>
+          <ul class="list-clean compact-list">
+            <li>改善活動が機能開発との兼任</li>
+            <li>開発が逼迫すると改善から先に止まる</li>
+            <li>技術負債返済やDevEx改善が継続責務になっていない</li>
+            <li>改善が個人の善意に依存する</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="meta">Proposal</div>
+          <h3>改善責任とCapacityを明示する</h3>
+          <p class="muted">
+            通常の機能開発とは別に、開発環境、CI/CD、自動化、Observability、
+            技術負債改善へ継続的に責任を持つ主体と明示的なCapacityを確保する。
+            組織規模に応じてDedicated EngineerからPlatform / DevEx Teamへ段階的に広げる。
+          </p>
+        </article>
+      </div>
+
+      <div class="platform-map" aria-label="Product teams and platform relationship">
+        <div class="platform-users">
+          <div class="pipeline-node"><strong>Product Team A</strong><span>needs / feedback</span></div>
+          <div class="pipeline-node"><strong>Product Team B</strong><span>needs / feedback</span></div>
+        </div>
+        <div class="platform-arrow">↓</div>
+        <div class="platform-core">
+          <strong>Platform / Developer Experience</strong>
+          <div class="tags platform-tags">
+            <span class="tag">CI/CD</span><span class="tag">Dev Environments</span>
+            <span class="tag">Observability</span><span class="tag">Automation</span>
+            <span class="tag">Self-service</span>
+          </div>
+        </div>
+        <div class="platform-arrow">↓</div>
+        <div class="platform-outcome">Less repeated toil · Lower cognitive load · More room for development</div>
+      </div>
+
+      <div class="grid-2 proposal-grid">
+        <article class="card">
+          <div class="meta">Trade-off</div>
+          <h3>専任化や標準化そのものを目的にしない</h3>
+          <p class="muted">
+            Platform側がすべてを抱えると新たなボトルネックになり、
+            過剰な標準化はProduct Teamの事情や選択肢を損なう可能性があります。
+            共通ガードレールとセルフサービスの境界を設計する必要があります。
+          </p>
+        </article>
+        <article class="card related-card">
+          <div class="meta">Related Implementation</div>
+          <h3>Reliable Development Platform</h3>
+          <p class="muted">
+            「環境維持・復旧判断の一部をDeveloperからPlatformへ移せるか」という考えを、
+            Kubernetes上のSelf-Healing Runtimeとして実装し、障害注入E2Eで検証しました。
+          </p>
+          <a class="card-link" href="rdp.html">Implemented projectを見る →</a>
+        </article>
+      </div>
+      <p class="proposal-status">Workplace status: <strong>Proposed / Shared internally / Not implemented</strong></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Connection</p>
+      <h2>ObservationからImplementationまでをつなげる。</h2>
+      <div class="flow flow-3">
+        <div class="flow-step"><strong>Observe</strong><span>実務でDeveloperの摩擦を見つける</span></div>
+        <div class="flow-step"><strong>Propose</strong><span>原因と改善案を構造化し、社内共有する</span></div>
+        <div class="flow-step"><strong>Implement</strong><span>個人開発で仕組みとして実装・検証する</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <a href="index.html">← Portfolio Top</a> ·
+    <a href="bevy.html">Bevy CI/CD</a> ·
+    <a href="rdp.html">Reliable Development Platform</a>
+  </div>
+</footer>
+</body>
+</html>
