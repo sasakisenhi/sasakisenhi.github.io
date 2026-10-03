@@ -25,12 +25,13 @@
   <section class="hero">
     <div class="container">
       <p class="eyebrow">Workplace Observations / Improvement Proposals</p>
-      <h1>現場で見つけた摩擦を、改善可能な構造へ分解する。</h1>
+      <h1><span class="phrase">現場で見つけた摩擦を、</span><span class="phrase">改善可能な構造へ分解する。</span></h1>
       <p class="lead">
-        日々の開発・保守業務で感じた課題を起点に、テスト戦略、CI/CD、
-        Platform Engineeringに関する改善施策を調査・整理し、社内へ共有しました。
-        以下はその中から、開発環境エンジニアリングとの関連が強い3件を、
-        社内固有情報を除いて一般化したものです。
+        <span class="phrase">日々の開発・保守業務で感じた課題を起点に、</span>
+        <span class="phrase">テスト戦略、CI/CD、Platform Engineeringに関する改善施策を</span>
+        <span class="phrase">調査・整理し、社内へ共有しました。</span>
+        <span class="phrase">以下はその中から、開発環境エンジニアリングとの関連が強い3件を、</span>
+        <span class="phrase">社内固有情報を除いて一般化したものです。</span>
       </p>
       <div class="hero-actions">
         <a class="button primary" href="#test-strategy">3 proposalsを見る</a>
@@ -49,14 +50,16 @@
   <section class="section" id="test-strategy">
     <div class="container">
       <p class="eyebrow">01 — Test Strategy</p>
-      <h2>E2E偏重から、多層のフィードバックループへ。</h2>
+      <h2><span class="phrase">E2E偏重から、</span><span class="phrase">多層のフィードバックループへ。</span></h2>
       <div class="proposal-lead">
         <div>
           <span class="kicker">Observation</span>
           <p>
-            担当した開発環境ではUnit Testが未整備で、品質確認がE2Eテストや後工程の確認に大きく依存していました。
-            比較的小さなロジックの不具合でも後工程まで進まないと検出しにくく、
-            フィードバックコストが高くなりやすい構造に問題意識を持ちました。
+            <span class="phrase">担当した開発環境ではUnit Testが未整備で、</span>
+            <span class="phrase">品質確認がE2Eテストや後工程の確認に大きく依存していました。</span>
+            <span class="phrase">比較的小さなロジックの不具合でも、</span>
+            <span class="phrase">後工程まで進まないと検出しにくく、</span>
+            <span class="phrase">フィードバックコストが高くなりやすい構造に問題意識を持ちました。</span>
           </p>
         </div>
         <div class="proposal-metric">
@@ -79,9 +82,10 @@
           <div class="meta">Proposal</div>
           <h3>テストの責務を層ごとに分離する</h3>
           <p class="muted">
-            ロジックはUnit、API・DB・外部連携はIntegration、
-            主要業務フローはSystem / E2Eへ分ける。
-            E2Eをなくすのではなく、E2Eでしか確認できない重要フローへ集中させる。
+            <span class="phrase">ロジックはUnit、API・DB・外部連携はIntegration、</span>
+            <span class="phrase">主要業務フローはSystem / E2Eへ分ける。</span>
+            <span class="phrase">E2Eをなくすのではなく、</span>
+            <span class="phrase">E2Eでしか確認できない重要フローへ集中させる。</span>
           </p>
         </article>
       </div>
@@ -118,19 +122,23 @@
   <section class="section" id="cicd">
     <div class="container">
       <p class="eyebrow">02 — CI/CD</p>
-      <h2>ローカル依存の品質確認を、共有CIのガードレールへ。</h2>
+      <h2><span class="phrase">ローカル依存の品質確認を、</span><span class="phrase">共有CIのガードレールへ。</span></h2>
       <div class="proposal-lead">
         <div>
           <span class="kicker">Observation</span>
           <p>
-            Lint自体は導入されていましたが、各開発環境で安定して同じ条件で動く状態ではなく、
-            品質確認が個々のDeveloper環境に依存していました。
-            また、DDDを採用したアーキテクチャでも依存ルールから外れた実装が残ることがあり、
-            人のレビューだけで継続的に守ることには限界がありました。
+            <span class="phrase">Lint自体は導入されていましたが、</span>
+            <span class="phrase">各開発環境で安定して同じ条件で動く状態ではなく、</span>
+            <span class="phrase">品質確認が個々のDeveloper環境に依存していました。</span>
+            <span class="phrase">また、DDDを採用したアーキテクチャでも、</span>
+            <span class="phrase">依存ルールから外れた実装が残ることがあり、</span>
+            <span class="phrase">人のレビューだけで継続的に守ることには限界がありました。</span>
           </p>
           <p>
-            デプロイ自体は自動化されている一方、本番まで複数の環境・段階を通す必要があり、
-            CIと自動テストが十分でないため、一つの修正でも同様の動作確認を複数回手作業で行う状態でした。
+            <span class="phrase">デプロイ自体は自動化されている一方、</span>
+            <span class="phrase">本番まで複数の環境・段階を通す必要があり、</span>
+            <span class="phrase">CIと自動テストが十分でないため、</span>
+            <span class="phrase">一つの修正でも同様の動作確認を複数回手作業で行う状態でした。</span>
           </p>
         </div>
         <div class="proposal-metric">
@@ -153,8 +161,9 @@
           <div class="meta">Proposal</div>
           <h3>品質ルールをExecutableにする</h3>
           <p class="muted">
-            PR / pushを起点に、Lint・Format・Unit / Integration Testを共有CIで実行し、
-            DDDの依存方向などのArchitecture RuleもArchitecture Testとして機械的に検証する。
+            <span class="phrase">PR / pushを起点に、Lint・Format・Unit / Integration Testを共有CIで実行し、</span>
+            <span class="phrase">DDDの依存方向などのArchitecture Ruleも、</span>
+            <span class="phrase">Architecture Testとして機械的に検証する。</span>
           </p>
         </article>
       </div>
@@ -198,18 +207,22 @@
   <section class="section" id="platform-engineering">
     <div class="container">
       <p class="eyebrow">03 — Platform Engineering</p>
-      <h2>改善を「空いた時間」から守る。</h2>
+      <h2><span class="phrase">改善を、</span><span class="phrase">「空いた時間」から守る。</span></h2>
       <div class="proposal-lead">
         <div>
           <span class="kicker">Observation</span>
           <p>
-            開発基盤や開発プロセスを改善しようという動き自体は何度か生まれていました。
-            しかし改善活動は通常の機能開発との兼任で、開発案件が逼迫すると優先順位が下がり、
-            活動が止まることが繰り返されていました。
+            <span class="phrase">開発基盤や開発プロセスを改善しようという動き自体は、</span>
+            <span class="phrase">何度か生まれていました。</span>
+            <span class="phrase">しかし改善活動は通常の機能開発との兼任で、</span>
+            <span class="phrase">開発案件が逼迫すると優先順位が下がり、</span>
+            <span class="phrase">活動が止まることが繰り返されていました。</span>
           </p>
           <p>
-            また、効率化で一時的に余力が生まれても、その時間は新規機能開発へ再配分されやすく、
-            技術負債の返済や開発環境の継続的改善に使うCapacityを確保しにくい構造がありました。
+            <span class="phrase">また、効率化で一時的に余力が生まれても、</span>
+            <span class="phrase">その時間は新規機能開発へ再配分されやすく、</span>
+            <span class="phrase">技術負債の返済や開発環境の継続的改善に使うCapacityを</span>
+            <span class="phrase">確保しにくい構造がありました。</span>
           </p>
         </div>
         <div class="proposal-metric">
@@ -219,8 +232,8 @@
       </div>
 
       <div class="callout proposal-quote">
-        改善で生まれた余力がすべて新規開発へ再投入されるなら、
-        改善活動自身を持続させる余白は生まれない。
+        <span class="phrase">改善で生まれた余力がすべて新規開発へ再投入されるなら、</span>
+        <span class="phrase">改善活動自身を持続させる余白は生まれない。</span>
       </div>
 
       <div class="grid-2 proposal-grid">
