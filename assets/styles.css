@@ -374,3 +374,23 @@ p, li, figcaption, .callout, .muted {
     font-size: clamp(2.2rem, 11vw, 2.8rem);
   }
 }
+
+
+/* Hard guard for desktop hero headline */
+@media (min-width: 801px) {
+  .hero-title .headline-segment {
+    display: block;
+    width: auto;
+    max-width: none;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 800px) {
+  .hero-title .headline-segment {
+    display: inline;
+    width: auto;
+    max-width: 100%;
+    white-space: normal;
+  }
+}
