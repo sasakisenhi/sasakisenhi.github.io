@@ -26,8 +26,10 @@
       <p class="eyebrow">Game Development / CI/CD / AWS</p>
       <h1>Bevy開発を支えるCI/CD・AWS基盤</h1>
       <p class="lead">
-        Rust + Bevyのゲーム開発を題材に、変更の自動検証からAWSへのデプロイ、
-        Windows向けビルド成果物の保管までを一つのCI/CD経路として設計・実装し、実AWS環境でE2E検証しました。
+        <span class="phrase">Rust + Bevyのゲーム開発を題材に、</span>
+        <span class="phrase">変更の自動検証からAWSへのデプロイ、Windows向けビルド成果物の保管までを</span>
+        <span class="phrase">一つのCI/CD経路として設計・実装し、</span>
+        <span class="phrase">実AWS環境でE2E検証しました。</span>
       </p>
       <div class="hero-actions">
         <a class="button primary" href="https://github.com/sasakisenhi/Bevy_AWS_lesson">GitHub Repository</a>
@@ -42,9 +44,11 @@
       <span class="kicker">Why</span>
       <h2 style="margin-top:16px;">ゲームそのものだけでなく、ゲームを作る環境を改善する。</h2>
       <div class="callout">
-        開発フロー、テスト、ビルド、成果物管理を整え、
-        開発者が変更を安全に試し、再現可能な成果物へつなげられる状態をつくることをテーマにしています。
-        Phase 1では、GitHub ActionsからAWSへのOIDC認証、CDKデプロイ、Windows Release build、S3 Artifact Freezeまでを実環境で確認しました。
+        <span class="phrase">開発フロー、テスト、ビルド、成果物管理を整え、</span>
+        <span class="phrase">開発者が変更を安全に試し、</span>
+        <span class="phrase">再現可能な成果物へつなげられる状態をつくることをテーマにしています。</span>
+        <span class="phrase">Phase 1では、GitHub ActionsからAWSへのOIDC認証、CDKデプロイ、</span>
+        <span class="phrase">Windows Release build、S3 Artifact Freezeまでを実環境で確認しました。</span>
       </div>
     </div>
   </section>
@@ -101,9 +105,9 @@
       <p class="eyebrow">Phase 1 — Complete / v1.0.0</p>
       <h2>CIからAWS、Windows build、Artifact Freezeまでを実環境でつなぐ。</h2>
       <p class="section-intro">
-        2026-10-02のE2E runで、GitHub ActionsからGitHub OIDCを介してAWS IAM Roleを引き受け、
-        CDK diff / deploy、Windows向けRelease build、S3への成果物保存までの経路が成功しました。
-        Phase 1の完成点を <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson/releases/tag/v1.0.0">v1.0.0</a> として固定しています。
+        <span class="phrase">2026-10-02のE2E runで、GitHub ActionsからGitHub OIDCを介してAWS IAM Roleを引き受け、</span>
+        <span class="phrase">CDK diff / deploy、Windows向けRelease build、S3への成果物保存までの経路が成功しました。</span>
+        <span class="phrase">Phase 1の完成点を <a href="https://github.com/sasakisenhi/Bevy_AWS_lesson/releases/tag/v1.0.0">v1.0.0</a> として固定しています。</span>
       </p>
       <div class="grid-3">
         <div class="card"><div class="metric">✓</div><div class="muted">GitHub OIDC → AWS</div></div>
