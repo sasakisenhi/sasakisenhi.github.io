@@ -334,3 +334,43 @@ p, li, figcaption, .callout, .muted {
     margin-left: 0;
   }
 }
+
+
+/* Responsive semantic wrapping for Japanese copy */
+.hero-title {
+  max-width: 1080px;
+  font-size: clamp(2.55rem, 6.2vw, 5.2rem);
+}
+.hero-title .headline-segment {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+}
+.keep-together {
+  white-space: nowrap;
+}
+
+@supports (word-break: auto-phrase) {
+  h1, h2, h3,
+  .lead, .section-intro,
+  .card p, .callout, .muted,
+  .phrase {
+    word-break: auto-phrase;
+  }
+}
+
+@media (max-width: 800px) {
+  .hero-title {
+    font-size: clamp(2.45rem, 10vw, 4.2rem);
+  }
+  .hero-title .headline-segment {
+    display: inline;
+    width: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-title {
+    font-size: clamp(2.2rem, 11vw, 2.8rem);
+  }
+}
